@@ -1,5 +1,5 @@
 # 源铸产品设计
-## 模块划分
+## 一、模块划分
 
 
 ```mermaid
@@ -24,9 +24,9 @@ graph TB
 检验机制 --> Google
 检验机制 --> keybase
 
-
 ```
 
+## 二、流程案例
 
 流程案例：用户登记
 ```mermaid
@@ -103,6 +103,7 @@ sequenceDiagram
 
 ```
 
+
 流程案例：用户检验信息解绑
 ```mermaid
 
@@ -123,6 +124,41 @@ sequenceDiagram
         u-->>m: 解绑
     end
 ```
+
+流程案例：资产发行
+```mermaid
+
+sequenceDiagram
+    participant u as 用户
+    participant s as 资产
+    participant a as 用户账户
+    participant sa as 管理员账户
+    participant ca as 发行账户(链上)
+    participant na as 新资产账户(链上)
+    participant p as 手机
+    participant m as 邮箱
+
+    u->>s: 发行资产
+    s-->>ca: 发行
+    ca-->>na: 划转
+    ca-->>ca: 账户权限死锁
+    na-->>sa: 10%资产映射
+    na-->>a: 90%资产映射
+    p-->>u: 通知
+    m-->>u: 通知
+```
+
+## 三、属性
+
+### 1.用户明细
+
+
+| 序号 | 字段 | 备注 |
+| ------ | ------ | ------ |
+| 1 | 手机 |  |
+| 2 | 邮箱 |  |
+| 3 | Google | |
+| 4 | 昵称 | |
 
 
 
