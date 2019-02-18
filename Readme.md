@@ -16,10 +16,10 @@ graph TB
 账户 --> 项目
 项目 --> 项目明细
 项目 --> 项目管理
-项目管理 --> 发布
-项目管理 --> 执行
-项目管理 --> 取消
-管理员 
+管理员 --> 管理员明细
+管理员 --> 账户
+管理员 --> 检验机制
+管理员 --> 通知机制
 通知机制 --> 手机
 通知机制 --> 邮件
 检验机制 --> 邮件
@@ -30,29 +30,47 @@ graph TB
 ```
 
 
-流程案例：用户验证`
+流程案例：用户登记
 ```mermaid
 
 sequenceDiagram
     participant U as 用户
-    participant A as 资产
-    participant P as 项目
+    participant P as 手机
+    participant M as 邮箱
 
-    U->>P: 发起募集
-    P->>A: 资本需求
+    U->>P: 手机登记
+    P->>M: 邮箱登记
+    M-->>U: 验证码检验
+    P-->>U: 验证码检验
+    U->>U: 密码登记
 
 ```
 
-流程案例：项目募集
+流程案例：用户密码重置
 ```mermaid
 
 sequenceDiagram
     participant U as 用户
-    participant A as 资产
-    participant P as 项目
+    participant P as 手机
+    participant M as 邮箱
 
-    U->>P: 发起募集
-    P->>A: 资本需求
+    U->>P: 手机登记
+    P->>M: 邮箱登记
+    M->>U: 验证码检验
+    P->>U: 验证码检验
+    U->>U: 密码重置
+
+```
+
+流程案例：账户创建
+```mermaid
+
+sequenceDiagram
+    participant U as 用户
+    participant A as 账户
+
+    U->>A: 创建
+    A->>A: 确定账户类型
 
 ```
 
