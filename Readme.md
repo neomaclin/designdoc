@@ -1,3 +1,4 @@
+# 源铸产品设计
 ## 模块划分
 
 
@@ -16,10 +17,7 @@ graph TB
 账户 --> 项目
 项目 --> 项目明细
 项目 --> 项目管理
-管理员 --> 管理员明细
-管理员 --> 账户
-管理员 --> 检验机制
-管理员 --> 通知机制
+管理员
 通知机制 --> 手机
 通知机制 --> 邮件
 检验机制 --> 邮件
@@ -34,15 +32,20 @@ graph TB
 ```mermaid
 
 sequenceDiagram
-    participant U as 用户
-    participant P as 手机
-    participant M as 邮箱
+    participant u as 用户
+    participant p as 手机
+    participant m as 邮箱
+    participant a as 账户
 
-    U->>P: 手机登记
-    P->>M: 邮箱登记
-    M-->>U: 验证码检验
-    P-->>U: 验证码检验
-    U->>U: 密码登记
+    u->>p: 手机登记
+    p->>m: 邮箱登记
+    m->>u: 验证码检验
+    p->>u: 验证码检验
+    u->u: 密码登记
+    u-->>a: 登记默认账户
+    m-->>u: 通知
+    p-->>u: 通知
+    Note right of a: 普通账户类型
 
 ```
 
@@ -50,27 +53,17 @@ sequenceDiagram
 ```mermaid
 
 sequenceDiagram
-    participant U as 用户
-    participant P as 手机
-    participant M as 邮箱
+    participant u as 用户
+    participant p as 手机
+    participant m as 邮箱
 
-    U->>P: 手机登记
-    P->>M: 邮箱登记
-    M->>U: 验证码检验
-    P->>U: 验证码检验
-    U->>U: 密码重置
-
-```
-
-流程案例：账户创建
-```mermaid
-
-sequenceDiagram
-    participant U as 用户
-    participant A as 账户
-
-    U->>A: 创建
-    A->>A: 确定账户类型
+    u->>p: 手机登记
+    p->>m: 邮箱登记
+    m->>u: 验证码检验
+    p->>u: 验证码检验
+    u->>u: 密码重置
+    m-->>u: 通知
+    p-->>u: 通知
 
 ```
 
@@ -78,25 +71,61 @@ sequenceDiagram
 ```mermaid
 
 sequenceDiagram
-    participant S as 管理员
-    participant A as 资产
-    participant P as 项目
+    participant s as 管理员
+    participant u as 用户
+    participant a as 账户
+    participant p as 手机
+    participant m as 邮箱
 
-    U->>P: 发起募集
-    P->>A: 资本需求
+    s->>u: 冻结
+    u->>u: 指定账户或默认全部账户
+    u-->>a: 冻结
+    m-->>u: 通知
+    p-->>u: 通知
 
 ```
 
-流程案例：充提资金
+流程案例：用户解冻
 ```mermaid
 
 sequenceDiagram
-    participant S as 管理员
-    participant A as 资产
-    participant P as 项目
+    participant s as 管理员
+    participant u as 用户
+    participant a as 账户
+    participant p as 手机
+    participant m as 邮箱
 
-    U->>P: 发起募集
-    P->>A: 资本需求
+    s->>u: 解冻
+    u->>u: 指定解冻账户或默认全部冻结账户
+    u-->>a: 解冻
+    m-->>u: 通知
+    p-->>u: 通知
 
 ```
+
+流程案例：用户检验信息解绑
+```mermaid
+
+sequenceDiagram
+    participant s as 管理员
+    participant u as 用户
+    participant g as google
+    participant p as 手机
+    participant m as 邮箱
+
+    s->>u: 选择解绑
+    activate u
+    alt 解绑谷歌
+        u-->>g: 解绑
+    else 解绑手机
+        u-->>p: 解绑
+    else 解绑邮箱
+        u-->>m: 解绑
+    end
+```
+
+
+
+
+
 
