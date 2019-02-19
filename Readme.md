@@ -236,13 +236,11 @@ sequenceDiagram
     a1->>pr: 缴纳手续费
     note right of a1:募集额度1%手续费
     pr-->>a1: 配额冻结
-    p-->>u1: 通知
-    m-->>u1: 通知
     p-->>u2: 验证码
     m-->>u2: 验证码
     g-->>u2: 验证码
     u2->>u2: 检验
-    u2->>pr: 参与项目
+    u2->>pr: 参与募集
     pr-->>a2: 参与额冻结
     p-->>u2: 通知
     m-->>u2: 通知
@@ -263,6 +261,10 @@ sequenceDiagram
         end
     end
     opt 项目方取消项目
+        p-->>u1: 验证码
+        m-->>u1: 验证码
+        g-->>u1: 验证码
+        u1->>u1: 检验
         u1->>pr: 取消
         pr-->>a1: 解除冻结
         a1-->>a1: 结算入账
@@ -286,6 +288,126 @@ sequenceDiagram
         end
     end
 
+```
+
+流程案例：置换项目管理
+```mermaid
+    sequenceDiagram
+    participant u1 as 用户(项目方)
+    participant a1 as 用户账户(项目方)
+    participant pr as 项目
+    participant u2 as 用户(参与方)
+    participant a2 as 用户账户(参与方)
+    participant p as 手机
+    participant m as 邮箱
+    participant g as Google
+
+    p-->>u1: 验证码
+    m-->>u1: 验证码
+    g-->>u1: 验证码
+    u1->>u1: 检验
+    u1->>pr: 发起置换
+        note right of pr:支持多币种置换<br>多币种
+    pr-->>a1: 配额冻结
+    p-->>u2: 验证码
+    m-->>u2: 验证码
+    g-->>u2: 验证码
+    u2->>u2: 检验
+    u2->>pr: 参与置换
+    a1-->>a1: 结算入账
+    a2-->>a2: 结算入账
+    p-->>u2: 通知
+    m-->>u2: 通知
+    opt 项目方取消项目
+        p-->>u1: 验证码
+        m-->>u1: 验证码
+        g-->>u1: 验证码
+        u1->>u1: 检验
+        u1->>pr: 取消
+        pr-->>a1: 解除冻结
+        a1-->>a1: 结算入账
+    end
+```
+
+流程案例：回收项目管理
+```mermaid
+    sequenceDiagram
+    participant u1 as 用户(项目方)
+    participant a1 as 用户账户(项目方)
+    participant pr as 项目
+    participant u2 as 用户(参与方)
+    participant a2 as 用户账户(参与方)
+    participant p as 手机
+    participant m as 邮箱
+    participant g as Google
+
+    p-->>u1: 验证码
+    m-->>u1: 验证码
+    g-->>u1: 验证码
+    u1->>u1: 检验
+    u1->>pr: 发起回收
+        note right of pr:支持多币种回收<br>多币种,回收资产<br>进行销毁
+    pr-->>a1: 配额冻结
+    p-->>u2: 验证码
+    m-->>u2: 验证码
+    g-->>u2: 验证码
+    u2->>u2: 检验
+    u2->>pr: 参与回收
+    a1-->>a1: 结算入账
+    pr-->>pr: 创建黑洞账户，销毁
+    a2-->>a2: 结算入账
+    p-->>u2: 通知
+    m-->>u2: 通知
+    
+    opt 项目方取消项目
+        p-->>u1: 验证码
+        m-->>u1: 验证码
+        g-->>u1: 验证码
+        u1->>u1: 检验
+        u1->>pr: 取消
+        pr-->>a1: 解除冻结
+        a1-->>a1: 结算入账
+    end
+```
+
+流程案例：空投项目管理
+```mermaid
+    sequenceDiagram
+    participant u1 as 用户(项目方)
+    participant a1 as 用户账户(项目方)
+    participant pr as 项目
+    participant u2 as 用户(参与方)
+    participant a2 as 用户账户(参与方)
+    participant p as 手机
+    participant m as 邮箱
+    participant g as Google
+
+    opt 高级空投
+        u1->>pr: 发起调研
+        pr->>u1: 调研报告
+        p-->>u1: 通知
+        m-->>u1: 通知
+    end 
+    p-->>u1: 验证码
+    m-->>u1: 验证码
+    g-->>u1: 验证码
+    u1->>u1: 检验
+    u1->>pr: 发起空投
+    pr-->>a1: 配额冻结
+    u2->>pr: 领取资格检验
+    opt 资格有效
+        u2->>a2: 地址认证及绑定
+        u2->>pr: 领取空投
+        a2-->>a2: 结算入账
+        p-->>u2: 通知
+        m-->>u2: 通知
+    end
+    opt 空投周期结束
+        pr-->>a1: 解除冻结
+        a1-->>a1: 结算入账
+        p-->>u1: 通知
+        m-->>u1: 通知
+    end
 ```
 
 ## 三、属性
