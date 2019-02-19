@@ -23,7 +23,10 @@ graph TB
 检验机制 --> 邮件
 检验机制 --> Google
 检验机制 --> keybase
-
+链上账户 --> 在线账户(热)
+链上账户 --> 离线账户(冷)
+链上账户 --> 新资产账户
+链上账户 --> 网络手续费账户
 ```
 
 ## 二、流程案例
@@ -103,7 +106,6 @@ sequenceDiagram
 
 ```
 
-
 流程案例：用户检验信息解绑
 ```mermaid
 
@@ -125,6 +127,27 @@ sequenceDiagram
     end
 ```
 
+流程案例：在线钱包(热)&离线钱包(冷)
+```mermaid
+
+sequenceDiagram
+    participant ha as 在线钱包(热)
+    participant su as 管理员
+    participant ca as 离线钱包(冷)
+
+    loop 每日10:00AM
+        alt 在线钱包(热)大于总额度1%
+            ha -->> su: 划转通知
+            ha -->> ha: 多签检验(threshold=2)
+            su ->> ca: 划转
+        else 离线钱包(冷)大于总额度99%
+            ca -->> su: 划转通知
+            ca -->> ca: 多签检验(threshold=6)
+            su ->> ha: 划转
+        end
+    end
+```
+
 流程案例：资产发行
 ```mermaid
 
@@ -132,8 +155,7 @@ sequenceDiagram
     participant u as 用户
     participant s as 资产
     participant a as 用户账户
-    participant sa as 管理员账户
-    participant ca as 发行账户(链上)
+    participant ca as 资产发行账户(链上)
     participant na as 新资产账户(链上)
     participant p as 手机
     participant m as 邮箱
@@ -142,11 +164,60 @@ sequenceDiagram
     s-->>ca: 发行
     ca-->>na: 划转
     ca-->>ca: 账户权限死锁
-    na-->>sa: 10%资产映射
-    na-->>a: 90%资产映射
+    a-->>a: 90%资产入账
+    Note right of a:10%资产作为发行<br>佣金
     p-->>u: 通知
     m-->>u: 通知
 ```
+
+流程案例：充值
+```mermaid
+
+sequenceDiagram
+    participant u as 用户
+    participant a as 用户账户
+    participant ha as 在线账户(热)
+    participant p as 手机
+    participant m as 邮箱
+
+    u->>a: 充值
+    ha-->>ha: 到账检验
+    ha-->>a: 余额映射
+    p-->>u: 通知
+    m-->>u: 通知
+```
+
+流程案例：提币
+```mermaid
+
+sequenceDiagram
+    participant u as 用户
+    participant su as 管理员
+    participant a as 用户账户
+    participant ha as 在线账户(热)
+    participant ca as 离线账户(冷)
+    participant p as 手机
+    participant m as 邮箱
+    participant g as Google
+
+    u->>a: 提币
+    p-->>u: 验证码
+    m-->>u: 验证码
+    g-->>u: 验证码
+    u->>u:检验
+    a-->>su: 提币通知
+    su->>ha: 提币
+    alt 热钱包额度不足
+        ca-->>ha: 划转
+        ha-->>u:提币
+    else 热钱包额度充足
+        ha-->>u:提币
+    end
+    a-->>a: 入账
+    p-->>u: 通知
+    m-->>u: 通知
+```
+
 
 ## 三、属性
 
