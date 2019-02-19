@@ -218,11 +218,79 @@ sequenceDiagram
     m-->>u: 通知
 ```
 
+流程案例：募集项目管理
+```mermaid
+
+sequenceDiagram
+    participant u1 as 用户(项目方)
+    participant a1 as 用户账户(项目方)
+    participant a3 as 用户账户(jetmint矿石)
+    participant pr as 项目
+    participant u2 as 用户(参与方)
+    participant a2 as 用户账户(参与方)
+    participant p as 手机
+    participant m as 邮箱
+    participant g as Google
+
+    u1->>pr: 发起募集
+    a1->>pr: 缴纳手续费
+    note right of a1:募集额度1%手续费
+    pr-->>a1: 配额冻结
+    p-->>u1: 通知
+    m-->>u1: 通知
+    p-->>u2: 验证码
+    m-->>u2: 验证码
+    g-->>u2: 验证码
+    u2->>u2: 检验
+    u2->>pr: 参与项目
+    pr-->>a2: 参与额冻结
+    p-->>u2: 通知
+    m-->>u2: 通知
+    opt 项目到期或参与额度已满
+        u1->>pr: 分发
+        pr-->>a1: 解除冻结
+        a1-->>a1: 结算入账
+        pr-->>a2: 解除冻结
+        a2-->>a2: 结算入账
+        p-->>u2: 通知
+        m-->>u2: 通知
+        opt jetmint挖矿活动周期内
+            a3-->>a1: 挖矿奖励
+            note right of a1:缴纳手续费的80%<br>兑换为XYZ作为奖励 
+            a1-->>a1:入账
+            p-->>u1: 通知
+            m-->>u1: 通知
+        end
+    end
+    opt 项目方取消项目
+        u1->>pr: 取消
+        pr-->>a1: 解除冻结
+        a1-->>a1: 结算入账
+        pr-->>a2: 解除冻结
+        a2-->>a2: 结算入账
+        p-->>u2: 通知
+        m-->>u2: 通知
+        opt jetmint挖矿活动周期内
+            a3-->>a1: 50%挖矿奖励
+            note right of a1:缴纳手续费的80%<br>兑换为XYZ作为奖励 
+            a1-->>a1:入账
+            p-->>u1: 通知
+            m-->>u1: 通知
+            opt 有参与方
+                a3-->>a2: 30%挖矿奖励
+                note right of a2:按照参与方参与额度比例奖励 
+                a2-->>a2:入账
+                p-->>u2: 通知
+                m-->>u2: 通知
+            end
+        end
+    end
+
+```
 
 ## 三、属性
 
 ### 1.用户明细
-
 
 | 序号 | 字段 | 备注 |
 | ------ | ------ | ------ |
@@ -230,9 +298,3 @@ sequenceDiagram
 | 2 | 邮箱 |  |
 | 3 | Google | |
 | 4 | 昵称 | |
-
-
-
-
-
-
