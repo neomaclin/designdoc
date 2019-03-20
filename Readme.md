@@ -1,39 +1,140 @@
 # 源铸产品设计
+
+## 产品概况
+源铸平台是基于Jetmint[1]实现的去中心化投融平台，平台规范了项目方的代币发行，项目募集的流程，降低项目方跑路风险，保障代投机构、投资个体的资产安全，同时平台整合了ICO模式下的业务场景，实现了代币完整生命周期管理，包括代币的发行、募集、分发、回收、销毁以及二级市场的流通。
+
+## 产品目标
+1.利用Jetmint网络，实现全球投融项目的
+
+## 解决的问题
+
+
 ## 一、模块划分
 
-功能模块
+源铸社区组织结构
+```mermaid
+graph TB
+源铸社区 --> 用户
+用户 --> 账户
+源铸社区 --> 项目
+账户 -.-> 项目
+账户 --> 资产
+源铸社区 --> 媒体
+源铸社区 --> 推广
+源铸社区 --> 活动
+活动 --> 矿池
+源铸社区 --> 其他
+```
+
+源铸媒体组织结构
 ```mermaid
 graph TB
 
-用户管理 --> 用户注册
-用户管理 --> 用户明细
+媒体 --> 微信
+媒体 --> QQ
+媒体 --> Telegrem
+媒体 --> Twitter
+媒体 --> Facebook
+媒体 --> 公众号
+```
 
-用户管理 --> 检验机制
-用户管理 --> 通知机制
-链下账户 --> 账户明细
-链下账户 --> 资产
-资产 --> 资产映射 
-资产映射 --> 链上账户
-资产 --> 资产明细
-项目 --> 链上周期
-链下账户 --> 项目
-项目 --> 项目明细
-项目 --> 项目管理
+源铸其他组织结构
+```mermaid
+graph TB
+
+其他 --> 公告
+其他 --> 关于
+其他 --> 资费说明
+其他 --> FAQ
+其他 --> 风险提示
+其他 --> 加入我们
+```
+
+源铸推广组织结构
+```mermaid
+graph TB
+
+推广 --> 新浪微博
+推广 --> QQ空间
+推广 --> 豆瓣
+推广 --> QQ
+推广 --> 微信
+```
+
+源铸用户组织结构
+```mermaid
+graph TB
+
+用户 --> 用户注册
+用户注册 --> 密码找回
+用户 --> 用户明细
+用户 --> 检验机制
+用户 --> 通知机制
 通知机制 --> 手机
 通知机制 --> 邮件
 检验机制 --> 邮件
 检验机制 --> 手机
 检验机制 --> Google
 检验机制 --> keybase
-链上账户 --> 在线账户(热)
-链上账户 --> 离线账户(冷)
-链上账户 --> 新资产账户
-链上账户 --> 网络手续费账户
+用户 --> 账户
+用户 --> 项目
+```
 
-社区运营 --> 项目推广
-社区运营 --> 网站公告
+源铸账户组织结构
+```mermaid
+graph TB
 
-矿池
+账户 --> 链下账户
+账户 --> 链上账户
+链下账户 --> 用户账户
+用户账户 --> 账户明细
+用户账户 --> 项目
+链下账户 --> 管理员账户
+管理员账户 --> 网络手续费账户
+管理员账户 --> 募集手续费账户
+管理员账户 --> 资产发行佣金账户
+管理员账户 --> 呆坏账账户
+链上账户 --> 热账户
+链上账户 --> 冷账户
+链上账户 --> 资产发行账户
+链上账户 --> 提币账户
+热账户 --> stellar
+冷账户 --> stellar
+资产发行账户 --> stellar
+提币账户 --> stellar
+```
+
+源铸资产组织结构
+```mermaid
+graph TB
+
+资产 --> 可用资产
+资产 --> 冻结资产 
+资产 --> 资产明细
+冻结资产 --> 冻结明细
+冻结明细 --> 提币冻结明细
+冻结明细 --> 项目冻结明细
+冻结明细 --> 参与冻结明细
+资产 --> 充值明细
+资产 --> 提取明细
+```
+
+源铸项目组织结构
+```mermaid
+graph TB
+
+项目 --> 募集项目
+募集项目 --> 项目明细
+募集项目 --> 白名单
+项目 --> 空投项目
+空投项目 --> 项目明细
+项目 --> 置换项目
+置换项目 --> 项目明细
+置换项目 --> 白名单
+项目 --> 回收项目
+回收项目 --> 项目明细
+回收项目 --> 白名单
+
 ```
 
 角色
@@ -57,15 +158,17 @@ id2((管理员))
 sequenceDiagram
     participant u as 用户
     participant r as 注册
-    participant n as 通知机制
     participant a as 账户
+    participant c as 检验机制
+    participant n as 通知机制
+    
 
     u ->> r: 注册
-    r ->> n: 生成结果
-    n ->>u: 验证码检验
+    r ->> c: 生成结果
+    c ->>u: 验证码检验
     u ->u: 密码登记
     u -->>a: 登记默认账户
-    n -->>u: 通知
+    n -->>u: 结果
     Note right of a: 普通账户类型
 
 ```
@@ -76,13 +179,14 @@ sequenceDiagram
 sequenceDiagram
     participant u as 用户
     participant r as 注册
+    participant c as 检验机制
     participant n as 通知机制
 
     u ->> r: 请求重置
-    r ->> n: 生成结果
-    n->>u: 验证码检验
-    u->>u: 密码重置
-    n-->>u: 通知
+    r -->> c: 生成结果
+    c ->>u: 验证码检验
+    u ->>u: 密码重置
+    n -->>u: 结果
 
 ```
 
@@ -92,16 +196,17 @@ sequenceDiagram
 sequenceDiagram
     participant s as 管理员
     participant u as 用户
-    participant a as 链下账户
+    participant a as 账户
+    participant ai as 账户接口
     participant n as 通知机制
 
-    s->>u: 冻结
+    s->>u: 解冻
     u->>u: 指定账户或默认全部账户
-    u-->> a: 冻结
+    u-->> ai: 解冻
+    ai-->>a: 生成结果
     a-->> n: 操作结果
-    n->>u: 通知
-
-
+    a-->> a: 解冻
+    n-->>u: 结果
 ```
 
 流程案例：用户解冻
@@ -110,14 +215,17 @@ sequenceDiagram
 sequenceDiagram
     participant s as 管理员
     participant u as 用户
-    participant a as 链下账户
+    participant a as 账户
+    participant ai as 账户接口
     participant n as 通知机制
 
-    s->>u: 解冻
-    u->>u: 指定解冻账户或默认全部冻结账户
-    u-->>a: 解冻
+    s->>u: 冻结
+    u->>u: 指定账户或默认全部账户
+    u-->> ai: 冻结
+    ai-->>a: 生成结果
     a-->> n: 操作结果
-    n-->>u: 通知
+    a-->> a: 冻结
+    n-->>u: 结果
 
 
 ```
@@ -128,40 +236,46 @@ sequenceDiagram
 sequenceDiagram
     participant s as 管理员
     participant u as 用户
-    participant g as google
-    participant p as 手机
-    participant m as 邮箱
+    participant c as 检验机制
+    participant n as 通知机制
 
-    s->>u: 选择解绑
-    activate u
-    alt 解绑谷歌
-        u-->>g: 解绑
-    else 解绑手机
-        u-->>p: 解绑
-    else 解绑邮箱
-        u-->>m: 解绑
-    end
+    s->>u: 选择解绑方式
+    u-->>c: 解绑
+    c-->>n: 操作结果
+    n-->>u: 结果
+    
 ```
 
 ### 2. 资产管理
 
-流程案例：在线钱包(热)&离线钱包(冷)
+流程案例：源铸资产账户
 ```mermaid
 
 sequenceDiagram
-    participant ha as 在线钱包(热)
     participant su as 管理员
-    participant ca as 离线钱包(冷)
+    participant ai as 账户接口
+    participant ha as 热账户
+    participant ca as 冷账户
+
+    su-->>ai: 创建账户
+    ai-->>ha: 生成
+    ha->>ai: 添加多签
+    ai-->>ha: 生成结果
+    ai-->>ca: 生成
+    ca->>ai: 添加多签
+    ai-->>ca: 生成结果
 
     loop 每日10:00AM
-        alt 在线钱包(热)大于总额度1%
+        alt 热账户大于总额度1%
             ha -->> su: 划转通知
-            ha -->> ha: 多签检验(threshold=2)
-            su ->> ca: 划转
-        else 离线钱包(冷)大于总额度99%
+            su ->> ai: 多签检验(threshold=2)
+            ai -->> ha: 生成结果
+            ha -->> ca: 划转
+        else 冷账户大于总额度99%
             ca -->> su: 划转通知
-            ca -->> ca: 多签检验(threshold=6)
-            su ->> ha: 划转
+            su ->> ai: 多签检验(threshold=6)
+            ai-->> ca: 生成结果
+            ca -->> ha: 划转
         end
     end
 ```
@@ -211,11 +325,11 @@ sequenceDiagram
     participant ha as 在线账户(热)
     participant ca as 离线账户(冷)
     participant n as 通知机制
-    participant g as Google
+    participant c as 检验机制
 
     u->>a: 提币
     n-->>u: 验证码
-    g-->>u: 验证码
+    c-->>u: 验证码
     u->>u:检验
     a-->>su: 提币通知
     su->>ha: 提币
